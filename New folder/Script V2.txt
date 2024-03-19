@@ -1,0 +1,69 @@
+# Huawei Switch Configuration
+
+# Enter System View
+system-view
+
+# Set Hostname
+sysname Semera-Switch
+
+# Configure Management Interface
+interface Vlanif1
+ ip address 173.16.0.21 255.255.255.0
+
+# Enable SSH
+ssh user admin service-type ssh
+ssh user admin authentication-type local
+
+# Set Clock Manually (if NTP is not available)
+clock datetime 2024-02-26 12:00:00
+
+# Set Console Interface Authentication
+user-interface con 0
+ authentication-mode aaa
+ set authentication password cipher semera123
+
+# Enable AAA
+aaa
+
+# Create Local User for Login
+local-user admin password irreversible-cipher semera123
+local-user admin service-type ssh
+
+# Configure Console Interface for Line Authentication
+user-interface vty 0 4
+ authentication-mode aaa
+
+# Configure Basic Interface Settings
+interface GigabitEthernet0/0/1
+ port link-type trunk
+ port trunk allow-pass vlan all
+
+# Configure 10G Ports (Example: GigabitEthernet0/0/10)
+interface Ten-GigabitEthernet0/0/10
+ port link-type trunk
+ port trunk allow-pass vlan all
+
+# Create VLANs (Example: VLAN 4, 10, 20, 30)
+vlan batch 4 10 20 30
+interface vlanif 4
+ ip address 172.16.4.1 255.255.255.0
+interface vlanif 10
+ ip address 172.16.10.1 255.255.255.0
+interface vlanif 20
+ ip address 172.16.20.1 255.255.255.0
+interface vlanif 30
+ ip address 172.16.30.1 255.255.255.0
+
+# Configure Interfaces (Example: Access Port in VLAN 10)
+interface GigabitEthernet0/0/2
+ port link-type access
+ port default vlan 10
+
+# Save Configuration
+save
+
+# Exit from System View
+quit
+
+# Display Configuration
+display current-configuration
